@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Fitness Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { width: 400px; height: 500px; }
+        .heat-map-day { transition: all 0.2s; }
+        .heat-map-day:hover { transform: scale(1.1); }
+    </style>
+</head>
+<body class="bg-gray-50 p-4">
+    <div class="max-w-full mx-auto">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-6">
+            <h1 class="text-xl font-bold text-gray-800">Fitness Tracker</h1>
+            <div class="flex items-center space-x-2">
+                <span class="text-sm text-gray-600">🔥</span>
+                <span id="streak-counter" class="text-sm font-semibold text-orange-500">0 day streak</span>
+            </div>
+        </div>
+
+        <!-- Weekly Stats -->
+        <div class="grid grid-cols-3 gap-3 mb-6">
+            <div class="bg-white rounded-lg p-3 text-center shadow-sm">
+                <div id="weekly-workouts" class="text-2xl font-bold text-blue-600">0</div>
+                <div class="text-xs text-gray-600">This Week</div>
+            </div>
+            <div class="bg-white rounded-lg p-3 text-center shadow-sm">
+                <div id="weekly-minutes" class="text-2xl font-bold text-green-600">0</div>
+                <div class="text-xs text-gray-600">Minutes</div>
+            </div>
+            <div class="bg-white rounded-lg p-3 text-center shadow-sm">
+                <div id="total-workouts" class="text-2xl font-bold text-purple-600">0</div>
+                <div class="text-xs text-gray-600">Total</div>
+            </div>
+        </div>
+
+        <!-- Weekly Heat Map -->
+        <div class="bg-white rounded-lg p-4 mb-6 shadow-sm">
+            <h3 class="text-sm font-semibold text-gray-700 mb-3">This Week</h3>
+            <div class="flex justify-between">
+                <div class="text-center">
+                    <div id="day-0" class="heat-map-day w-8 h-8 bg-gray-200 rounded mb-1 cursor-pointer"></div>
+                    <span class="text-xs text-gray-500">Sun</span>
+                </div>
+                <div class="text-center">
+                    <div id="day-1" class="heat-map-day w-8 h-8 bg-gray-200 rounded mb-1 cursor-pointer"></div>
+                    <span class="text-xs text-gray-500">Mon</span>
+                </div>
+                <div class="text-center">
+                    <div id="day-2" class="heat-map-day w-8 h-8 bg-gray-200 rounded mb-1 cursor-pointer"></div>
+                    <span class="text-xs text-gray-500">Tue</span>
+                </div>
+                <div class="text-center">
+                    <div id="day-3" class="heat-map-day w-8 h-8 bg-gray-200 rounded mb-1 cursor-pointer"></div>
+                    <span class="text-xs text-gray-500">Wed</span>
+                </div>
+                <div class="text-center">
+                    <div id="day-4" class="heat-map-day w-8 h-8 bg-gray-200 rounded mb-1 cursor-pointer"></div>
+                    <span class="text-xs text-gray-500">Thu</span>
+                </div>
+                <div class="text-center">
+                    <div id="day-5" class="heat-map-day w-8 h-8 bg-gray-200 rounded mb-1 cursor-pointer"></div>
+                    <span class="text-xs text-gray-500">Fri</span>
+                </div>
+                <div class="text-center">
+                    <div id="day-6" class="heat-map-day w-8 h-8 bg-gray-200 rounded mb-1 cursor-pointer"></div>
+                    <span class="text-xs text-gray-500">Sat</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Body Parts Frequency -->
+        <div class="bg-white rounded-lg p-4 mb-6 shadow-sm">
+            <h3 class="text-sm font-semibold text-gray-700 mb-3">Body Focus This Week</h3>
+            <div id="body-parts-chart" class="space-y-2">
+                <!-- Dynamic content populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Recent Workouts -->
+        <div class="bg-white rounded-lg p-4 shadow-sm">
+            <h3 class="text-sm font-semibold text-gray-700 mb-3">Recent Workouts</h3>
+            <div id="recent-workouts" class="space-y-2 max-h-32 overflow-y-auto">
+                <div class="text-sm text-gray-500 text-center py-2">No workouts yet</div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="mt-4 flex space-x-2">
+            <button id="export-data" class="flex-1 bg-blue-500 text-white py-2 px-3 rounded text-sm hover:bg-blue-600 transition-colors">
+                Export Data
+            </button>
+            <button id="clear-data" class="flex-1 bg-red-500 text-white py-2 px-3 rounded text-sm hover:bg-red-600 transition-colors">
+                Clear All
+            </button>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>

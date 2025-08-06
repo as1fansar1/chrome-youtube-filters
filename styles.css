@@ -1,0 +1,338 @@
+/* Fitness Filter Bar Styles */
+.fitness-filter-bar {
+    position: sticky;
+    top: 0;
+    z-index: 2000;
+    width: 100%;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.8));
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid #4CAF50;
+    margin-bottom: 20px;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease-in-out;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.fitness-filter-bar.show {
+    transform: translateY(0);
+}
+
+/* Light mode support for YouTube */
+[dark="false"] .fitness-filter-bar {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 249, 250, 0.9));
+    border-bottom: 2px solid #4CAF50;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.filter-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 15px 20px;
+}
+
+.filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.filter-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #4CAF50;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+[dark="false"] .filter-title {
+    color: #2E7D32;
+}
+
+.collapse-btn {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.collapse-btn:hover {
+    background: #45a049;
+    transform: scale(1.1);
+}
+
+.filter-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.filter-content.collapsed {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    margin-top: -15px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.filter-group label {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+[dark="false"] .filter-group label {
+    color: rgba(0, 0, 0, 0.8);
+}
+
+.filter-group select {
+    padding: 8px 12px;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 14px;
+    min-width: 130px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+[dark="false"] .filter-group select {
+    background: rgba(0, 0, 0, 0.05);
+    color: #333;
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.filter-group select:focus {
+    outline: none;
+    border-color: #4CAF50;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+[dark="false"] .filter-group select:focus {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.filter-group select option {
+    background: #333;
+    color: white;
+    padding: 8px;
+}
+
+[dark="false"] .filter-group select option {
+    background: white;
+    color: #333;
+}
+
+.clear-btn {
+    padding: 8px 16px;
+    background: #f44336;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 20px;
+}
+
+.clear-btn:hover {
+    background: #da190b;
+    transform: translateY(-1px);
+}
+
+/* Video Overlay Styles */
+.fitness-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.completion-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    background: #4CAF50;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.4);
+    animation: completionPulse 2s ease-in-out;
+}
+
+@keyframes completionPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.overlay-actions {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: all;
+}
+
+.fitness-overlay:hover .overlay-actions {
+    opacity: 1;
+}
+
+.action-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid white;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 4px;
+}
+
+.action-btn:hover {
+    transform: scale(1.1);
+    background: rgba(0, 0, 0, 0.9);
+}
+
+.action-btn.completed {
+    background: #4CAF50;
+    border-color: #4CAF50;
+}
+
+.action-btn.completed:hover {
+    background: #45a049;
+}
+
+/* Video Border Indicators */
+ytd-video-renderer:has(.completion-badge),
+ytd-grid-video-renderer:has(.completion-badge) {
+    border-left: 4px solid #4CAF50 !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .filter-content {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .filter-group {
+        width: 100%;
+    }
+    
+    .filter-group select {
+        width: 100%;
+        min-width: unset;
+    }
+    
+    .filter-container {
+        padding: 12px 15px;
+    }
+    
+    .filter-title {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .fitness-filter-bar {
+        margin-bottom: 10px;
+    }
+    
+    .filter-header {
+        margin-bottom: 10px;
+    }
+    
+    .filter-title {
+        font-size: 14px;
+    }
+    
+    .collapse-btn {
+        width: 25px;
+        height: 25px;
+        font-size: 14px;
+    }
+}
+
+/* Animations */
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Ensure compatibility with YouTube's layout */
+#primary-inner > .fitness-filter-bar {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* Hide filter bar on non-search pages */
+body:not([page-type="search"]) .fitness-filter-bar {
+    display: none;
+}
+
+/* Custom scrollbar for filter dropdowns */
+.filter-group select::-webkit-scrollbar {
+    width: 6px;
+}
+
+.filter-group select::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.filter-group select::-webkit-scrollbar-thumb {
+    background: #4CAF50;
+    border-radius: 3px;
+}
+
+.filter-group select::-webkit-scrollbar-thumb:hover {
+    background: #45a049;
+}
