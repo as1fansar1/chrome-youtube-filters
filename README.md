@@ -11,11 +11,37 @@ A Chrome extension that enhances YouTube for fitness enthusiasts by adding smart
 - **Difficulty levels**: Beginner, Intermediate, Advanced
 - **Special filters**: No talking/music only, Follow along, Apartment friendly
 
+### 🧰 Custom filter rules (v1.1)
+Open the Options page (right-click the extension icon → "Options", or use the "Manage rules →" link in the popup) to add your own rules. Each rule has three pieces:
+
+- **Channel name** — the exact channel name to target, or `*` to apply globally.
+- **Filter type** — one of:
+  - `shorts` — hide every YouTube Short from the matching channel.
+  - `minDuration` — hide videos shorter than N minutes (helps skip filler).
+  - `keyword` — hide videos whose title or channel contains the given substring (case-insensitive).
+- **Value** — the minutes threshold for `minDuration`, or the keyword for `keyword`. Ignored for `shorts`.
+
+Rules persist to `chrome.storage.sync`, so they roam with your Chrome profile. Edits take effect on the next page render — no reload required.
+
 ### 📊 Workout Tracking
 - Mark videos as completed with visual checkmarks
 - Track workout history and statistics
 - Personal workout dashboard with analytics
 - Weekly streak tracking with heat map visualization
+
+### ⏱️ Savings counter (v1.1)
+Every time the extension hides a video for you, it bumps a counter stored in `chrome.storage.local` under the key `stats`:
+
+```json
+{
+  "hiddenThisWeek": 12,
+  "hiddenAllTime": 247,
+  "estimatedTimeSavedMin": 1976,
+  "weekStart": "2026-05-11T00:00:00.000Z"
+}
+```
+
+Time saved assumes an 8-minute average per hidden video (a reasonable proxy for a typical YouTube session). The popup surfaces "This week" totals up front and an all-time line beneath it. The weekly counter resets automatically when `weekStart` is more than 7 days old.
 
 ### 🎨 Clean UI
 - Non-intrusive filter bar that slides down on fitness-related searches
@@ -83,6 +109,7 @@ This extension is not yet published to the Chrome Web Store.
 
 ### Dashboard Features
 - **Click the extension icon** to open your personal fitness dashboard
+- **This week panel**: see how many videos the extension hid and roughly how much time it saved you, with a link to manage your custom rules
 - **Weekly Stats**: See workouts completed this week and total minutes
 - **Streak Tracking**: Visualize your workout consistency with a weekly heat map
 - **Body Parts Chart**: Track which muscle groups you've worked this week
@@ -95,18 +122,17 @@ This extension is not yet published to the Chrome Web Store.
 ### File Structure
 ```
 youtube-fitness-filter/
-├── manifest.json          # Extension configuration
-├── content.js            # Main content script for YouTube integration
-├── popup.html            # Dashboard popup interface
-├── popup.js              # Popup functionality and data visualization
-├── background.js         # Service worker for data management
-├── styles.css            # Styles for filter bar and overlays
-├── icons/                # Extension icons (optional)
-│   ├── icon16.png
-│   ├── icon32.png
-│   ├── icon48.png
-│   └── icon128.png
-└── README.md             # This file
+├── manifest.json           # Extension configuration
+├── content.js              # Main content script for YouTube integration
+├── rules.js                # Custom-rules engine + savings counter
+├── options.html            # Filter rules editor UI
+├── options.js              # Filter rules editor logic
+├── popup.html              # Dashboard popup interface
+├── popup.js                # Popup functionality and data visualization
+├── background.js           # Service worker for data management
+├── styles.css              # Styles for filter bar and overlays
+├── icons/                  # Extension icons (optional)
+└── README.md               # This file
 ```
 
 ### Technologies Used
@@ -117,9 +143,8 @@ youtube-fitness-filter/
 - **Tailwind CSS**: Utility-first CSS framework (via CDN for popup)
 
 ### Data Storage
-- Uses `chrome.storage.sync` for cross-device synchronization
-- Data limit: 100KB total storage
-- Automatic cleanup of old workout data
+- Workouts and filter rules go to `chrome.storage.sync` (synced across devices)
+- Savings stats go to `chrome.storage.local` (per-device, larger quota)
 - Export functionality for data backup
 
 ## Browser Compatibility
@@ -129,48 +154,10 @@ youtube-fitness-filter/
 - **Firefox**: Not supported (uses Manifest V2)
 - **Safari**: Not supported
 
-## Development
-
-### Local Development
-1. Make changes to the source files
-2. Go to `chrome://extensions/`
-3. Click the refresh button on the extension card
-4. Test your changes on YouTube
-
-### Key Development Notes
-- The extension only activates on `youtube.com` domains
-- Filter bar appears only on search results with fitness keywords
-- Uses `MutationObserver` to handle YouTube's dynamic content loading
-- Shadow DOM prevents style conflicts with YouTube's CSS
-
-### Testing
-Test the extension on these YouTube page types:
-- Search results (`/results?search_query=workout`)
-- Home page (filter bar should not appear)
-- Video watch pages (completion tracking only)
-- Channel pages (completion tracking only)
-
-## Troubleshooting
-
-### Filter Bar Not Appearing
-- Ensure you're on a YouTube search results page
-- Search for fitness-related keywords (workout, fitness, HIIT, yoga, etc.)
-- Check if the extension is enabled in `chrome://extensions/`
-
-### Data Not Syncing
-- Verify Chrome sync is enabled in browser settings
-- Check available storage space (extensions have 100KB limit)
-- Try refreshing the extension
-
-### Performance Issues
-- The extension is optimized for performance with debounced inputs
-- Large amounts of tracked data may slow down the dashboard
-- Use the "Clear All" button to reset data if needed
-
 ## Privacy & Permissions
 
 ### Required Permissions
-- **Storage**: To save workout tracking data
+- **Storage**: To save workout tracking data and custom filter rules
 - **ActiveTab**: To access YouTube page content
 - **Host Permissions**: Only for `*.youtube.com` domains
 
@@ -179,42 +166,13 @@ Test the extension on these YouTube page types:
 - No data is sent to external servers
 - Chrome sync is optional and controlled by your browser settings
 
-## Contributing
-
-### Bug Reports
-Please include:
-- Chrome version
-- Extension version
-- Steps to reproduce the issue
-- Screenshots if applicable
-
-### Feature Requests
-We welcome suggestions for new features! Consider:
-- New filter options
-- Additional workout tracking metrics
-- UI/UX improvements
-- Integration with fitness apps
-
-## Roadmap
-
-### Planned Features
-- Export to CSV format
-- Integration with Google Fit / Apple Health
-- Custom workout collections/playlists
-- Social sharing of workout achievements
-- Advanced analytics and insights
-- Integration with popular fitness YouTubers
-
-### Version History
+## Version History
+- **v1.1.0**: Per-channel filter rules + weekly savings counter
 - **v1.0.0**: Initial release with core filtering and tracking features
 
 ## License
 
 This project is open source. See LICENSE file for details.
-
-## Support
-
-For support, feature requests, or bug reports, please open an issue in the project repository.
 
 ---
 
