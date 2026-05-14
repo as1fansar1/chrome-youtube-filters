@@ -10,7 +10,10 @@ class YouTubeFitnessFilter {
         };
         this.filterBar = null;
         this.isInjected = false;
-        
+        // Track which DOM nodes we've already counted as hidden so we don't
+        // double-count when the MutationObserver re-runs over the same cards.
+        this.countedHidden = new WeakSet();
+
         this.init();
     }
 
@@ -19,6 +22,9 @@ class YouTubeFitnessFilter {
         this.setupMutationObserver();
         this.injectFilterBar();
         this.addVideoOverlays();
+        // Run the rule engine once on initial paint; afterwards the
+        // MutationObserver covers it.
+        this.applyChannelRules();
     }
 
     async loadWorkoutData() {
@@ -36,6 +42,7 @@ class YouTubeFitnessFilter {
                 if (mutation.type === 'childList') {
                     setTimeout(() => {
                         this.addVideoOverlays();
+                        this.applyChannelRules();
                         if (!this.isInjected && this.shouldShowFilterBar()) {
                             this.injectFilterBar();
                         }
@@ -192,7 +199,58 @@ class YouTubeFitnessFilter {
         videos.forEach(video => {
             const shouldShow = this.videoMatchesFilters(video);
             video.style.display = shouldShow ? 'block' : 'none';
+            if (!shouldShow) this.tallyHide(video);
         });
+    }
+
+    /**
+     * Walk every video card, evaluate user-defined rules from the Options
+     * page, and hide matching cards. Also increments the savings counter
+     * exactly once per card (WeakSet-tracked).
+     */
+    applyChannelRules() {
+        if (!window.FitnessRules) return;
+        const rules = window.FitnessRules.getRules();
+        if (!rules || rules.length === 0) return;
+
+        const videos = document.querySelectorAll(
+            'ytd-video-renderer, ytd-grid-video-renderer, ytd-rich-item-renderer, ytd-compact-video-renderer'
+        );
+        videos.forEach(video => {
+            // If something else already hid it, skip; the previous hide path
+            // owns the counter.
+            if (video.style.display === 'none') return;
+
+            const titleEl = video.querySelector('#video-title, h3 a, a#video-title-link');
+            const channelEl = video.querySelector(
+                'ytd-channel-name a, #channel-name a, .ytd-channel-name a'
+            );
+            const durationEl = video.querySelector(
+                'ytd-thumbnail-overlay-time-status-renderer span, .ytd-thumbnail-overlay-time-status-renderer'
+            );
+            const title = titleEl ? titleEl.textContent.trim() : '';
+            const channel = channelEl ? channelEl.textContent.trim() : '';
+            const durationText = durationEl ? durationEl.textContent.trim() : '';
+            const href = titleEl && titleEl.href ? titleEl.href : (video.querySelector('a[href]')?.href || '');
+            const isShort = /\/shorts\//.test(href);
+
+            const hide = window.FitnessRules.shouldHide({
+                channel, title, durationText, isShort
+            });
+            if (hide) {
+                video.style.display = 'none';
+                this.tallyHide(video);
+            }
+        });
+    }
+
+    tallyHide(node) {
+        if (!node || this.countedHidden.has(node)) return;
+        this.countedHidden.add(node);
+        if (window.FitnessRules) {
+            // Fire-and-forget; storage writes are debounced by Chrome.
+            window.FitnessRules.recordHide();
+        }
     }
 
     videoMatchesFilters(videoElement) {
@@ -475,6 +533,7 @@ if (window.location.hostname === 'www.youtube.com') {
                     fitnessFilter.isInjected = false;
                     fitnessFilter.injectFilterBar();
                     fitnessFilter.addVideoOverlays();
+                    fitnessFilter.applyChannelRules();
                 }
             }, 1000);
         }
