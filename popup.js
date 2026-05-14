@@ -1,6 +1,7 @@
 class FitnessPopup {
     constructor() {
         this.workouts = [];
+        this.stats = null;
         this.init();
     }
 
@@ -12,8 +13,15 @@ class FitnessPopup {
 
     async loadData() {
         try {
-            const result = await chrome.storage.sync.get(['workouts']);
-            this.workouts = result.workouts || [];
+            const synced = await chrome.storage.sync.get(['workouts']);
+            this.workouts = synced.workouts || [];
+            const local = await chrome.storage.local.get(['stats']);
+            this.stats = local.stats || {
+                hiddenThisWeek: 0,
+                hiddenAllTime: 0,
+                estimatedTimeSavedMin: 0,
+                weekStart: new Date().toISOString(),
+            };
         } catch (error) {
             console.error('Error loading data:', error);
         }
@@ -22,13 +30,40 @@ class FitnessPopup {
     setupEventListeners() {
         document.getElementById('export-data').addEventListener('click', () => this.exportData());
         document.getElementById('clear-data').addEventListener('click', () => this.clearData());
+        const manage = document.getElementById('manage-rules');
+        if (manage) {
+            manage.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (chrome.runtime.openOptionsPage) {
+                    chrome.runtime.openOptionsPage();
+                } else {
+                    window.open(chrome.runtime.getURL('options.html'));
+                }
+            });
+        }
     }
 
     updateUI() {
         this.updateStats();
+        this.updateSavingsPanel();
         this.updateHeatMap();
         this.updateBodyPartsChart();
         this.updateRecentWorkouts();
+    }
+
+    updateSavingsPanel() {
+        if (!this.stats) return;
+        const hours = (this.stats.estimatedTimeSavedMin || 0) / 60;
+        document.getElementById('hidden-week').textContent = this.stats.hiddenThisWeek || 0;
+        const timeEl = document.getElementById('time-saved-week');
+        // For weekly time, scale by weekly hide ratio so the headline ties
+        // to the "this week" framing.
+        const weeklyMin = (this.stats.hiddenThisWeek || 0) * 8;
+        timeEl.textContent = weeklyMin >= 60
+            ? `~${(weeklyMin / 60).toFixed(1)} hrs`
+            : `~${weeklyMin} min`;
+        document.getElementById('all-time-line').textContent =
+            `All-time: ${this.stats.hiddenAllTime || 0} hidden · ~${hours.toFixed(1)} hrs saved`;
     }
 
     updateStats() {
@@ -213,7 +248,14 @@ class FitnessPopup {
         if (confirm('Are you sure you want to clear all workout data? This cannot be undone.')) {
             try {
                 await chrome.storage.sync.clear();
+                await chrome.storage.local.remove(['stats']);
                 this.workouts = [];
+                this.stats = {
+                    hiddenThisWeek: 0,
+                    hiddenAllTime: 0,
+                    estimatedTimeSavedMin: 0,
+                    weekStart: new Date().toISOString(),
+                };
                 this.updateUI();
             } catch (error) {
                 console.error('Error clearing data:', error);
