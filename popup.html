@@ -6,7 +6,7 @@
     <title>YouTube Fitness Tracker</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { width: 400px; height: 500px; }
+        body { width: 400px; height: 600px; }
         .heat-map-day { transition: all 0.2s; }
         .heat-map-day:hover { transform: scale(1.1); }
     </style>
@@ -14,12 +14,31 @@
 <body class="bg-gray-50 p-4">
     <div class="max-w-full mx-auto">
         <!-- Header -->
-        <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center justify-between mb-4">
             <h1 class="text-xl font-bold text-gray-800">Fitness Tracker</h1>
             <div class="flex items-center space-x-2">
                 <span class="text-sm text-gray-600">🔥</span>
                 <span id="streak-counter" class="text-sm font-semibold text-orange-500">0 day streak</span>
             </div>
+        </div>
+
+        <!-- This Week savings panel -->
+        <div class="bg-white rounded-lg p-4 mb-4 shadow-sm border border-indigo-100">
+            <div class="flex items-center justify-between mb-2">
+                <h3 class="text-sm font-semibold text-gray-700">This week</h3>
+                <a href="#" id="manage-rules" class="text-xs text-indigo-600 hover:text-indigo-800 hover:underline">Manage rules →</a>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <div id="hidden-week" class="text-2xl font-bold text-indigo-600">0</div>
+                    <div class="text-xs text-gray-500">videos hidden</div>
+                </div>
+                <div>
+                    <div id="time-saved-week" class="text-2xl font-bold text-emerald-600">~0 hrs</div>
+                    <div class="text-xs text-gray-500">saved</div>
+                </div>
+            </div>
+            <div class="mt-2 text-xs text-gray-400" id="all-time-line">All-time: 0 hidden</div>
         </div>
 
         <!-- Weekly Stats -->
