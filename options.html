@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>YouTube Fitness Filter — Rules</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f9fafb;
+      color: #111827;
+      margin: 0;
+      padding: 32px;
+      max-width: 760px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    h1 { font-size: 22px; margin: 0 0 4px; }
+    .subtitle { color: #6b7280; font-size: 14px; margin-bottom: 24px; }
+    .card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+    h2 { font-size: 14px; text-transform: uppercase; letter-spacing: 0.06em; color: #6b7280; margin: 0 0 12px; font-weight: 600; }
+    .form-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: stretch; }
+    .form-row input, .form-row select {
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+      background: white;
+      color: #111827;
+    }
+    .form-row input[type=text] { flex: 1; min-width: 160px; }
+    .form-row input[type=number] { width: 90px; }
+    button {
+      padding: 8px 16px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    button:hover { background: #1d4ed8; }
+    button.danger { background: transparent; color: #dc2626; padding: 4px 10px; font-size: 13px; }
+    button.danger:hover { background: #fee2e2; }
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; padding: 8px 12px; border-bottom: 1px solid #e5e7eb; font-weight: 600; }
+    td { padding: 12px; border-bottom: 1px solid #f3f4f6; font-size: 14px; }
+    tr:last-child td { border-bottom: none; }
+    .empty { color: #9ca3af; text-align: center; padding: 24px; font-size: 14px; }
+    .tag { background: #eef2ff; color: #4338ca; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-family: ui-monospace, monospace; }
+    .hint { color: #6b7280; font-size: 12px; margin-top: 8px; }
+    .value-input { display: none; }
+    .value-input.active { display: inline-flex; }
+  </style>
+</head>
+<body>
+  <h1>Filter rules</h1>
+  <p class="subtitle">Hide videos that match these rules. Rules are synced across your browser via Chrome storage.</p>
+
+  <div class="card">
+    <h2>Add a rule</h2>
+    <div class="form-row">
+      <input id="rule-channel" type="text" placeholder='Channel name (or "*" for all)' value="*">
+      <select id="rule-type">
+        <option value="shorts">Hide all Shorts</option>
+        <option value="minDuration">Hide videos shorter than…</option>
+        <option value="keyword">Hide if title/channel contains…</option>
+      </select>
+      <input id="rule-value-num" class="value-input" type="number" min="0" step="1" placeholder="minutes" value="5">
+      <input id="rule-value-text" class="value-input active" type="text" placeholder="keyword">
+      <button id="add-rule">Add rule</button>
+    </div>
+    <div class="hint">Tip: use <span class="tag">*</span> for the channel to apply a rule globally.</div>
+  </div>
+
+  <div class="card">
+    <h2>Active rules (<span id="rule-count">0</span>)</h2>
+    <table id="rules-table">
+      <thead>
+        <tr>
+          <th>Channel</th>
+          <th>Filter</th>
+          <th>Value</th>
+          <th style="width: 60px;"></th>
+        </tr>
+      </thead>
+      <tbody id="rules-body"></tbody>
+    </table>
+    <div class="empty" id="empty-state" style="display:none;">No rules yet. Add one above to start filtering.</div>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>
