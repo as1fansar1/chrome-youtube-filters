@@ -1,36 +1,38 @@
 {
   "manifest_version": 3,
   "name": "YouTube Fitness Filter",
-  "version": "1.0.0",
-  "description": "Smart filtering for YouTube fitness videos with workout tracking and personal dashboard",
-  
+  "version": "1.1.0",
+  "description": "Smart filtering for YouTube fitness videos with workout tracking, custom filter rules, and time-saved analytics",
+
   "permissions": [
     "storage",
     "activeTab"
   ],
-  
+
   "host_permissions": [
     "*://*.youtube.com/*"
   ],
-  
+
   "background": {
     "service_worker": "background.js"
   },
-  
+
   "content_scripts": [
     {
       "matches": ["*://*.youtube.com/*"],
-      "js": ["content.js"],
+      "js": ["rules.js", "content.js"],
       "css": ["styles.css"],
       "run_at": "document_end"
     }
   ],
-  
+
   "action": {
     "default_popup": "popup.html",
     "default_title": "YouTube Fitness Tracker"
   },
-  
+
+  "options_page": "options.html",
+
   "web_accessible_resources": [
     {
       "resources": ["styles.css"],
